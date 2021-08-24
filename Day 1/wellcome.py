@@ -7,4 +7,3 @@ print("Welcome to this program!")
 print("What's your name")
 name = input("Your name: ")
 print("Nice to see you", name)
-""
