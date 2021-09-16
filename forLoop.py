@@ -6,12 +6,11 @@
 def ett_tvo_tre():
     x = int(input("Number 1: "))
     y = int(input("Number 2: "))
-
     if x < y:
         for n in range(x, y+1):
             print(n)
     elif y < x:
-        for n in range(y, x+1):
+        for n in range(x, y-1, -1):
             print(n)
 
 
@@ -38,4 +37,5 @@ def sex():
     print(harmony)
 
 
-sex()
+ett_tvo_tre()
+ett_tvo_tre()
