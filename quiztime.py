@@ -5,18 +5,26 @@
 
 # Imports
 
-from random import shuffle, choice
+from random import shuffle, randint
 
 
 # Classes
 
 class Question:
     def __init__(self, question: str, answer: str, alts: list) -> None:
+        """
+        This class takes in a name:str, an answer:str and alternative answers:list
+
+        """
         self.question = question
         self.answer = answer
         self.alts = alts
 
     def check_answer(self, ans: str):
+        """
+        Checks if the answer given is correct
+
+        """
         if self.answer.lower() == ans.lower():
             return True
         else:
@@ -55,21 +63,69 @@ class Quiz:
     def __init__(self, name: str, questions: list) -> None:
         self.name = name
         self.questions = questions
+        self.asked = []
         self.points = 0
 
-    def answer(self, quest):
-        if quest.check_answer():
-            print("You did well")
-            self.points += 1
+    def ask_question(self):
+        question_number = randint(0, len(self.questions)-1)
+        question = self.questions[question_number]
+        self.asked.append(self.questions.pop(question_number))
+        question.ask_question()
+        if question.check_answer(input(f"Answer: ")):
+            print("Well Done")
+            return True
         else:
-            print("Wrong LOL")
+            print("Wrong Answer")
+            return False
 
-    def get_question(self):
-        return self.questions
+    def get_name(self):
+        return self.name
+
+    def reset(self):
+        self.questions.extend(self.asked)
+        self.asked = []
+
+    def get_quiz_length(self):
+        return len(self.questions)
+
+    def get_asked_length(self):
+        return len(self.asked)
+
+
+def create_quiz(name, quiz_file):
+    questions = []
+    with open(f"{quiz_file}") as file:
+        for ques in file.readlines():
+            params = ques.split("/")
+            questions.append(
+                Question(params[0], params[1], params[2].split(",")))
+    return Quiz(name, questions)
+
+
+def game(quiz: list):
+    points = 0
+    for i in quiz:
+        print(i.get_name(), end="   ")
+    print("")
+    quiz_chouice = int(input("Which quiz would you like to play? "))-1
+    current_quiz = quiz[quiz_chouice]
+    for i in range(current_quiz.get_quiz_length()):
+        if current_quiz.ask_question():
+            points += 1
+    print("")
+    print(f"{points}/{current_quiz.get_asked_length()} points")
+    current_quiz.reset()
+
+
+def main():
+    while True:
+        quizzes = []
+        quizzes.append(create_quiz("Quiz1", "quiz_1.txt"))
+        game(quizzes)
+        inp = input("Would you like to continue?y/n")
+        if inp.lower() == "n":
+            break
 
 
 if __name__ == "__main__":
-    alts = ["not this", "nor this", "nope", "nah", "wrong one"]
-    q1 = Question("What is correct?", "this", alts)
-
-    q1.ask_question()
+    main()
