@@ -173,6 +173,13 @@ def create_quiz():
                 else:
                     break
             quizzes.append(Quiz(name, questions))
+            f"""
+            Saves the name of the quiz on the first row.
+            Then it saves the questions using this format:
+                {question}/{answer}/alternatives[0],alternatives[1],alternatives[n]
+
+                n being the last object in the alternatives list
+            """
             with open(f"Quiz_Folder/{name}.txt", "a") as f:
                 f.write(f"{name}\n")
                 for i in questions:
@@ -192,8 +199,8 @@ def create_quiz():
 
 def game(quiz: list):
     points = 0
-    for i in quiz:
-        print(i.get_name(), end="   ")
+    for i in range(len(quiz)):
+        print(f"{i+1}. {quiz[i].get_name()}", end="   ")
     print("")
     quiz_chouice = int(input("Which quiz would you like to play? "))-1
     current_quiz = quiz[quiz_chouice]
@@ -207,11 +214,11 @@ def game(quiz: list):
 
 def main():
     quizzes = []
-    quizzes.extend(create_quiz())
     quizzes.extend(load_quiz())
+    quizzes.extend(create_quiz())
     while True:
         game(quizzes)
-        inp = input("Would you like to continue?y/n ")
+        inp = input("Would you like to play again?y/n ")
         if inp.lower() == "n":
             print("Good bye!")
             break
